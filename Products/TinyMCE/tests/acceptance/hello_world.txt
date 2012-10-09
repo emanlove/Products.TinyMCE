@@ -1,0 +1,40 @@
+*** Settings ***
+
+Library  plone.act.PloneLibrary
+Library  Selenium2Library  timeout=0  implicit_wait=5  run_on_failure=Capture Page Screenshot
+Variables  plone/app/testing/interfaces.py
+Resource  plone/act/keywords.txt
+
+Suite Setup  Open Plone Root
+
+Suite Teardown  Close All Browsers
+
+*** Variables ***
+
+# Robotframework has an issue with getting variables from a resource file
+# and using them within the variable table within a test case. See
+# http://code.google.com/p/robotframework/issues/detail?id=561
+#${TEST_PAGE} =   ${PLONE_URL}/acceptance-test-page
+
+
+*** Test cases ***
+
+Hello World
+    Log in as site owner
+    #Go to  ${TEST_PAGE}
+    Go to  ${PLONE_URL}/acceptance-test-page
+
+    Click Edit in Edit Bar
+
+    Type  Hello World!
+    Select Window
+    Click button  Save
+
+    Page Should Contain  Hello World!
+
+*** Keywords ***
+
+Type
+    [Arguments]  ${text_str}
+    Select Frame  id=text_ifr
+    Input Text  id=content  ${text_str}

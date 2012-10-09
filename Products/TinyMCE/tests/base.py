@@ -59,6 +59,12 @@ class TinyMCELayer(PloneSandboxLayer):
             register_test_profile()
             self.applyProfile(portal, 'Products.TinyMCE:tinymce_testing')
 
+        # set up content required for acceptance tests
+        login(portal, TEST_USER_NAME)
+        setRoles(portal, TEST_USER_ID, ['Manager', ])
+        afid = portal.invokeFactory(
+            'Document','acceptance-test-page', title='Acceptance Test Page')
+
     def tearDownZope(self, app):
         """Tear down Zope."""
         z2.uninstallProduct(app, 'Products.TinyMCE')
@@ -69,7 +75,8 @@ INTEGRATION_TESTING = IntegrationTesting(
     bases=(FIXTURE,), name="TinyMCELayer:Integration")
 FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(FIXTURE,), name="TinyMCELayer:Functional")
-
+ACCEPTANCE_TESTING = FunctionalTesting(
+    bases=(FIXTURE, z2.ZSERVER_FIXTURE,), name="TinyMCELayer:Acceptance")
 
 class BaseTestCase(unittest.TestCase):
 
